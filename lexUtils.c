@@ -11,18 +11,29 @@ void create_and_store_token(int type, arrayList* arr, char* string, int lineNum)
 }
 
 token* next_token(arrayList* arr){
-   token** tok = (token**)malloc(sizeof(token*));
+   token** nextToken = (token**)malloc(sizeof(token*));
 
    if(fileIndex == arr->index){
         if (yylex()){
-            *tok = &arr->tokens[fileIndex++];
+            *nextToken = &arr->tokens[fileIndex++];
         }
 		else return NULL;
    }
    else{
-        *tok = &arr->tokens[fileIndex++];
+        *nextToken = &arr->tokens[fileIndex++];
    }
-   return *tok;
+   return *nextToken;
+}
+
+token* back_token(arrayList* arr){
+	 
+    token** prevToken = (token**)malloc(sizeof(token*));
+    
+    if(fileIndex >= 2){
+        *prevToken = &arr->tokens[(--fileIndex) - 1];
+    }
+
+    return *prevToken;
 }
 
 void printError(char* lexeme, FILE* outputFile){
