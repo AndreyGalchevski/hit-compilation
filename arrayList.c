@@ -7,37 +7,37 @@ void newArray(arrayList *arr)
     arr->size = 0;
 }
 
-void deleteToken(arrayList *arr, int index)
+void deleteToken(arrayList *arr, int indexToDelete)
 {
     int i;
-    //Token not in our array top kek
-    if (index < 0 || index >= arr->size)
+    //If index is out of bounds do nothing
+    if (indexToDelete < 0 || indexToDelete >= arr->size)
         return;
 
-    //We simply move evertything back (not really deleting)
-    for (i = index; i < arr->size - 1; i++)
+    //Shift tokens to the left starting after the token we want to delete
+    for (i = indexToDelete; i < arr->size - 1; i++)
     {
         arr->tokens[i] = arr->tokens[i + 1];
     }
-    //Since the last token is "duplicated" we don't really need arr[size]
+    //Decrement the array size by one, because the last token is the same as the one before him
     arr->size--;
     arr->tokens = realloc(arr->tokens, sizeof(token) * arr->size);
 }
 
-void addToken(arrayList *arr, token *val)
+void addToken(arrayList *arr, token *newToken)
 {
-    char *lexem = (*val).lexeme;
+    char *newLexeme = (*newToken).lexeme;
     arr->index++;
-    //If our array got overflown
+    //If there the array is full, enlarge it
     if (arr->index > arr->size)
     {
         arr->size = (++arr->size) * 2;
         arr->tokens = realloc(arr->tokens, sizeof(token) * (arr->size));
     }
-
-    arr->tokens[arr->index - 1].lexeme = (char *)malloc(strlen(lexem) + 1);
-    //Copy values to current token in our array
-    strcpy(arr->tokens[arr->index - 1].lexeme, lexem);
-    arr->tokens[arr->index - 1].type = (*val).type;
-    arr->tokens[arr->index - 1].line = (*val).line;
+    //Allocate space for the new lexeme
+    arr->tokens[arr->index - 1].lexeme = (char *)malloc(strlen(newLexeme) + 1);
+    //Assign new values to the current token
+    strcpy(arr->tokens[arr->index - 1].lexeme, newLexeme);
+    arr->tokens[arr->index - 1].type = (*newToken).type;
+    arr->tokens[arr->index - 1].line = (*newToken).line;
 }

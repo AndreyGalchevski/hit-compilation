@@ -36,6 +36,6 @@ token* back_token(arrayList* arr){
     return *prevToken;
 }
 
-void printError(char* lexeme, FILE* outputFile){
-    fprintf(outputFile, "\tERROR IN LINE %d: \"%s\"\n", line_num, lexeme);
+void printError(char* lexeme, FILE* outputFile){    
+    fprintf(outputFile, "\tThe character %s at line: %d does not begin any legal token in the language \n", lexeme, line_num);
 }
