@@ -2,12 +2,12 @@
 
 void create_and_store_token(int type, arrayList* arr, char* string, int lineNum){
 	
-    token* tok = (token*)malloc(sizeof(token));
-    tok->line = lineNum;
-    tok->type = type;
-    tok->lexeme = string;
-    addToken(arr, tok);
-	free(tok);
+    token* newToken = (token*)malloc(sizeof(token));
+    newToken->line = lineNum;
+    newToken->type = type;
+    newToken->lexeme = string;
+    addToken(arr, newToken);
+	free(newToken);
 }
 
 token* next_token(arrayList* arr){

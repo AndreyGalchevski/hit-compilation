@@ -1,6 +1,6 @@
 #include "arrayList.h"
 
-void newArray(arrayList *arr)
+void createNewArray(arrayList *arr)
 {
     arr->index = 0;
     arr->tokens = NULL;

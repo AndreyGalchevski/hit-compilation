@@ -10,7 +10,7 @@ typedef struct {
     int size;
 } arrayList;
 
-void newArray(arrayList*);
+void createNewArray(arrayList*);
 void deleteToken(arrayList*, int);
 void addToken(arrayList*, token*);
 

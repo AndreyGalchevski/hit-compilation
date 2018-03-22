@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
         printf("There is no test file in /home/andrey/Documents");
     }
 
-    newArray(&arr);
+    createNewArray(&arr);
     
     while(!EndOF){
          printToken(next_token(&arr), lexOutputFile);
