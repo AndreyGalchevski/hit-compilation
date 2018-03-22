@@ -46,6 +46,5 @@ typedef struct {
 } token;
 
 char* toString(int);
-void printToken(token*, FILE*);
 
 #endif

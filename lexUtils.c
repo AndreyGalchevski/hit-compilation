@@ -36,6 +36,12 @@ token* back_token(arrayList* arr){
     return *prevToken;
 }
 
+void printToken(token* t, FILE* outputFile){
+    if (t != NULL){
+        fprintf(outputFile, "\tToken of type %s was found at line: %d, lexeme: \"%s\"\r\n", toString(t->type), t->line, t->lexeme);
+    }
+}
+
 void printError(char* lexeme, FILE* outputFile){    
     fprintf(outputFile, "\tThe character %s at line: %d does not begin any legal token in the language \n", lexeme, line_num);
 }

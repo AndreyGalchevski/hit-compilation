@@ -1,12 +1,6 @@
 #include "token.h"
 #include "lexUtils.h"
 
-void printToken(token* t, FILE* outputFile){
-    if (t != NULL){
-        fprintf(outputFile, "\tToken of type %s was found at line: %d, lexeme: \"%s\"\r\n", toString(t->type), t->line, t->lexeme);
-    }
-}
-
 char* toString(int i) {
 	char* tokenTypes[] = {
 		"End",\
