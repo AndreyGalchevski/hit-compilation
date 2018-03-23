@@ -2108,7 +2108,7 @@ int main(int argc, char *argv[]){
     }
 
     if (yyin == NULL) {
-        printf("There is no test file in /home/andrey/Documents");
+        printf("There is no test file in the specified directory");
     }
 
     createNewArray(&arr);
