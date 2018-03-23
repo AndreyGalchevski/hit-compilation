@@ -3,37 +3,49 @@
 
 char* toString(int i) {
 	char* tokenTypes[] = {
+		"Block",\
+		"Begin",\
 		"End",\
-		"Program",\
-		"Real",\
+		"Type",\
+		"Is",\
 		"Integer",\
-		"If",\
-		"Then",\
-		"End if",\
-		"Loop",\
-		"Until",\
-		"End loop",\
-		"Start",\
-		"Else",\
-		"Letter",\
+		"Real",\
+		"Array",\
+		"Of",\
+		"When",\
+		"Do",\
+		"Default",\
+		"End when",\
+		"For",\
+		"End for",\
+		"Malloc",\
+		"Size of",\
+		"Free",\
 		"Arithmetic operation",\
-		"Real operation",\
-		"Id",\
-		"Integer number",\
-		"Number",\
-		"Separation sign",\
-		"Comma",\
-		"Assigment",\
-		"Increment",\
+		"Addition",\
+		"Subtraction",\
 		"Multiplication",\
+		"Division",\
+		"Power",\
+		"Increment",\
+		"Comparison operation",\
 		"Smaller than",\
 		"Greater than",\
-		"Equal or Greater Than",\
-		"Equal or Smaller Than",\
-		"Not Equal",\
+		"Smaller or equal than",\
+		"Greater or equal than",\
+		"Not equal",\
 		"Equal",\
+		"Assigment",\
+		"Pointer operator",\
+		"Address operator",\
+		"Id",\
+		"Integer number",\
+		"Real number",\
+		"Separation sign",\
 		"Colon",\
 		"Semicolon",\
+		"Left parenthesis",\
+		"Right parenthesis",\
 		"Left bracket",\
 		"Right bracket"
 		};
