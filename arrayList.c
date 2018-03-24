@@ -1,43 +1,43 @@
 #include "arrayList.h"
 
-void createNewArray(arrayList *arr)
+void createNewArray(arrayList *list)
 {
-    arr->index = 0;
-    arr->tokens = NULL;
-    arr->size = 0;
+    list->index = 0;
+    list->tokens = NULL;
+    list->size = 0;
 }
 
-void deleteToken(arrayList *arr, int indexToDelete)
+void deleteToken(arrayList *list, int indexToDelete)
 {
     int i;
     //If index is out of bounds do nothing
-    if (indexToDelete < 0 || indexToDelete >= arr->size)
+    if (indexToDelete < 0 || indexToDelete >= list->size)
         return;
 
     //Shift tokens to the left starting after the token we want to delete
-    for (i = indexToDelete; i < arr->size - 1; i++)
+    for (i = indexToDelete; i < list->size - 1; i++)
     {
-        arr->tokens[i] = arr->tokens[i + 1];
+        list->tokens[i] = list->tokens[i + 1];
     }
     //Decrement the array size by one, because the last token is the same as the one before him
-    arr->size--;
-    arr->tokens = realloc(arr->tokens, sizeof(token) * arr->size);
+    list->size--;
+    list->tokens = realloc(list->tokens, sizeof(token) * list->size);
 }
 
-void addToken(arrayList *arr, token *newToken)
+void addToken(arrayList *list, token *newToken)
 {
     char *newLexeme = (*newToken).lexeme;
-    arr->index++;
+    list->index++;
     //If there the array is full, enlarge it
-    if (arr->index > arr->size)
+    if (list->index > list->size)
     {
-        arr->size = (++arr->size) * 2;
-        arr->tokens = realloc(arr->tokens, sizeof(token) * (arr->size));
+        list->size = (++list->size) * 2;
+        list->tokens = realloc(list->tokens, sizeof(token) * (list->size));
     }
     //Allocate space for the new lexeme
-    arr->tokens[arr->index - 1].lexeme = (char *)malloc(strlen(newLexeme) + 1);
+    list->tokens[list->index - 1].lexeme = (char *)malloc(strlen(newLexeme) + 1);
     //Assign new values to the current token
-    strcpy(arr->tokens[arr->index - 1].lexeme, newLexeme);
-    arr->tokens[arr->index - 1].type = (*newToken).type;
-    arr->tokens[arr->index - 1].line = (*newToken).line;
+    strcpy(list->tokens[list->index - 1].lexeme, newLexeme);
+    list->tokens[list->index - 1].type = (*newToken).type;
+    list->tokens[list->index - 1].line = (*newToken).line;
 }

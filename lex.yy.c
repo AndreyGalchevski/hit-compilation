@@ -549,7 +549,7 @@ char *yytext;
 FILE* lexOutputFile;
 
 int endOfFile = 0;
-arrayList arr;
+arrayList tokenList;
 
 #line 555 "lex.yy.c"
 
@@ -831,212 +831,212 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 72 "scanner.l"
-{create_and_store_token(BLOCK_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(BLOCK_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 73 "scanner.l"
-{create_and_store_token(BEGIN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(BEGIN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 74 "scanner.l"
-{create_and_store_token(END_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(END_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 75 "scanner.l"
-{create_and_store_token(TYPE_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(TYPE_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 76 "scanner.l"
-{create_and_store_token(IS_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(IS_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 77 "scanner.l"
-{create_and_store_token(INTEGER_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(INTEGER_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 78 "scanner.l"
-{create_and_store_token(REAL_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(REAL_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 79 "scanner.l"
-{create_and_store_token(ARRAY_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(ARRAY_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 80 "scanner.l"
-{create_and_store_token(OF_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(OF_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 81 "scanner.l"
-{create_and_store_token(WHEN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(WHEN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 82 "scanner.l"
-{create_and_store_token(DO_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(DO_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 83 "scanner.l"
-{create_and_store_token(DEFAULT_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(DEFAULT_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 84 "scanner.l"
-{create_and_store_token(END_WHEN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(END_WHEN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 85 "scanner.l"
-{create_and_store_token(FOR_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(FOR_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 86 "scanner.l"
-{create_and_store_token(END_FOR_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(END_FOR_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 87 "scanner.l"
-{create_and_store_token(MALLOC_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(MALLOC_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 88 "scanner.l"
-{create_and_store_token(SIZE_OF_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(SIZE_OF_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 89 "scanner.l"
-{create_and_store_token(FREE_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(FREE_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 91 "scanner.l"
-{create_and_store_token(ADDITION_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(ADDITION_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 92 "scanner.l"
-{create_and_store_token(SUBTRACTION_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(SUBTRACTION_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 93 "scanner.l"
-{create_and_store_token(MULTIPLICATION_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(MULTIPLICATION_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 94 "scanner.l"
-{create_and_store_token(DIVISION_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(DIVISION_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 95 "scanner.l"
-{create_and_store_token(POWER_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(POWER_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 96 "scanner.l"
-{create_and_store_token(INCREMENT_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(INCREMENT_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 98 "scanner.l"
-{create_and_store_token(SMALLER_THAN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(SMALLER_THAN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 99 "scanner.l"
-{create_and_store_token(GREATER_THAN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(GREATER_THAN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 100 "scanner.l"
-{create_and_store_token(SMALLER_EQUAL_THAN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(SMALLER_EQUAL_THAN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 101 "scanner.l"
-{create_and_store_token(GREATER_EQUAL_THAN_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(GREATER_EQUAL_THAN_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 102 "scanner.l"
-{create_and_store_token(NOT_EQUAL_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(NOT_EQUAL_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 103 "scanner.l"
-{create_and_store_token(EQUAL_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(EQUAL_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 104 "scanner.l"
-{create_and_store_token(ASSIGNMENT_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(ASSIGNMENT_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 106 "scanner.l"
-{create_and_store_token(POINTER_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(POINTER_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 107 "scanner.l"
-{create_and_store_token(ADDRESS_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(ADDRESS_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 109 "scanner.l"
-{create_and_store_token(ID_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(ID_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 111 "scanner.l"
-{create_and_store_token(INT_NUM_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(INT_NUM_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 112 "scanner.l"
-{create_and_store_token(REAL_NUM_T, &arr, yytext, line_num); return 1;}
+{create_and_store_token(REAL_NUM_T, &tokenList, yytext, line_num); return 1;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 114 "scanner.l"
-{create_and_store_token(COLON_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(COLON_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 115 "scanner.l"
-{create_and_store_token(SEMICOLON_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(SEMICOLON_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 116 "scanner.l"
-{create_and_store_token(LEFT_PARENTHESIS_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(LEFT_PARENTHESIS_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 117 "scanner.l"
-{create_and_store_token(RIGHT_PARENTHESIS_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(RIGHT_PARENTHESIS_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 118 "scanner.l"
-{create_and_store_token(LEFT_BRACKET_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(LEFT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 119 "scanner.l"
-{create_and_store_token(RIGHT_BRACKET_T, &arr, yytext, line_num); return 1;} 
+{create_and_store_token(RIGHT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 121 "scanner.l"
@@ -2111,10 +2111,10 @@ int main(int argc, char *argv[]){
         printf("There is no test file in the specified directory");
     }
 
-    createNewArray(&arr);
+    createNewArray(&tokenList);
     
     while(!endOfFile){
-         printToken(next_token(&arr), lexOutputFile);
+         printToken(next_token(&tokenList), lexOutputFile);
     }
 
     fclose(lexOutputFile);

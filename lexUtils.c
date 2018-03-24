@@ -1,36 +1,36 @@
 #include "lexUtils.h"
 
-void create_and_store_token(int type, arrayList* arr, char* string, int lineNum){
+void create_and_store_token(int type, arrayList* list, char* string, int lineNum){
 	
     token* newToken = (token*)malloc(sizeof(token));
     newToken->line = lineNum;
     newToken->type = type;
     newToken->lexeme = string;
-    addToken(arr, newToken);
+    addToken(list, newToken);
 	free(newToken);
 }
 
-token* next_token(arrayList* arr){
+token* next_token(arrayList* list){
    token** nextToken = (token**)malloc(sizeof(token*));
 
-   if(fileIndex == arr->index){
+   if(fileIndex == list->index){
         if (yylex()){
-            *nextToken = &arr->tokens[fileIndex++];
+            *nextToken = &list->tokens[fileIndex++];
         }
 		else return NULL;
    }
    else{
-        *nextToken = &arr->tokens[fileIndex++];
+        *nextToken = &list->tokens[fileIndex++];
    }
    return *nextToken;
 }
 
-token* back_token(arrayList* arr){
+token* back_token(arrayList* list){
 	 
     token** prevToken = (token**)malloc(sizeof(token*));
     
     if(fileIndex >= 2){
-        *prevToken = &arr->tokens[(--fileIndex) - 1];
+        *prevToken = &list->tokens[(--fileIndex) - 1];
     }
 
     return *prevToken;
