@@ -2084,11 +2084,11 @@ void yyfree (void * ptr )
 int main(int argc, char *argv[]){
     int testFileNumber = 1;
 
-    const char* testFile1 = "/home/andrey/Documents/test1.txt";
-    const char* testFile2 = "/home/andrey/Documents/test2.txt";
+    const char* testFile1 = "/home/ubuntu/Documents/test1.txt";
+    const char* testFile2 = "/home/ubuntu/Documents/test2.txt";
 
-    const char* lexOutput1 = "/home/andrey/Documents/test1_328796511_300221280_lex.txt";
-    const char* lexOutput2 = "/home/andrey/Documents/test2_328796511_300221280_lex.txt";
+    const char* lexOutput1 = "/home/ubuntu/Documents/test1_328796511_300221280_lex.txt";
+    const char* lexOutput2 = "/home/ubuntu/Documents/test2_328796511_300221280_lex.txt";
 
     printf("Enter test file number to run: 1 or 2\n");
     scanf("%d", &testFileNumber);
