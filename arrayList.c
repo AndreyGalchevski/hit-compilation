@@ -38,6 +38,6 @@ void addToken(arrayList *list, token *newToken)
     list->tokens[list->index - 1].lexeme = (char *)malloc(strlen(newLexeme) + 1);
     //Assign new values to the current token
     strcpy(list->tokens[list->index - 1].lexeme, newLexeme);
-    list->tokens[list->index - 1].type = (*newToken).type;
+    list->tokens[list->index - 1].kind = (*newToken).kind;
     list->tokens[list->index - 1].line = (*newToken).line;
 }

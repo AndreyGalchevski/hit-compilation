@@ -51,7 +51,7 @@
 #define	RIGHT_BRACKET_T	        44
 
 typedef struct {
-    int type;
+    int kind;
     char* lexeme;
     int line;
 } token;

@@ -1,10 +1,10 @@
 #include "lexUtils.h"
 
-void create_and_store_token(int type, arrayList* list, char* string, int lineNum){
+void create_and_store_token(int kind, arrayList* list, char* string, int lineNum){
 	
     token* newToken = (token*)malloc(sizeof(token));
     newToken->line = lineNum;
-    newToken->type = type;
+    newToken->kind = kind;
     newToken->lexeme = string;
     addToken(list, newToken);
 	free(newToken);
@@ -38,10 +38,10 @@ token* back_token(arrayList* list){
 
 void printToken(token* t, FILE* outputFile){
     if (t != NULL){
-        fprintf(outputFile, "\tToken of type %s was found at line: %d, lexeme: \"%s\"\r\n", toString(t->type), t->line, t->lexeme);
+        fprintf(outputFile, "\tToken of kind '%s' was found at line: %d, lexeme: '%s' \n", toString(t->kind), t->line, t->lexeme);
     }
 }
 
 void printError(char* lexeme, FILE* outputFile){    
-    fprintf(outputFile, "\tThe character %s at line: %d does not begin any legal token in the language \n", lexeme, line_num);
+    fprintf(outputFile, "\tThe character '%s' at line: %d does not begin any legal token in the language \n", lexeme, line_num);
 }

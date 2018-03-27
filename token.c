@@ -2,7 +2,7 @@
 #include "lexUtils.h"
 
 char* toString(int i) {
-	char* tokenTypes[] = {
+	char* tokenKinds[] = {
 		"Block",\
 		"Begin",\
 		"End",\
@@ -49,5 +49,5 @@ char* toString(int i) {
 		"Left bracket",\
 		"Right bracket"
 		};
-	return tokenTypes[i];
+	return tokenKinds[i];
 }
