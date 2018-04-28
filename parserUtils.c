@@ -73,6 +73,7 @@ void parseDefinitions_(arrayList *array, FILE *file) {
     switch(token->kind) {
         case SEMICOLON_T:
             parseDefinitions(array, file);
+            break;
         default:
             back_token(array);
     }
@@ -88,8 +89,12 @@ void parseDefinition(arrayList *array, FILE *file) {
     switch(token->kind) {
         case ID_T:
             parseVarDefinition(array, file);
+            break;
         case TYPE_T:
-            parseTypeDefinition(array, file);            
+            parseTypeDefinition(array, file);
+            break;
+        default:
+            back_token(array);
     }   
 }
 
@@ -98,7 +103,6 @@ VAR_DEFINITION -> id: VAR_DEFINITION`
 */
 void parseVarDefinition(arrayList *array, FILE *file) {
     fprintf(file, "{VAR_DEFINITION -> id: VAR_DEFINITION`}\n");
-    match(ID_T, array, file);
     match(COLON_T, array, file);
     parseVarDefinition_(array, file);
 }
@@ -115,17 +119,17 @@ void parseVarDefinition_(arrayList *array, FILE *file) {
         case INTEGER_T:
         case REAL_T:
             parseBasicType(array, file);
+            break;
         case ID_T:
-            match(ID_T, array, file);
+            break;
     }
 }
 
 /*
 type type_name is TYPE_INDICATOR
 */
-void parseTypeDefinition_(arrayList *array, FILE *file) {
+void parseTypeDefinition(arrayList *array, FILE *file) {
     fprintf(file, "{type type_name is TYPE_INDICATOR}\n");
-    match(TYPE_T, array, file);
     match(ID_T, array, file);
     match(IS_T, array, file);
     parseTypeIndicator(array, file);
@@ -143,10 +147,13 @@ void parseTypeIndicator(arrayList *array, FILE *file) {
         case INTEGER_T:
         case REAL_T:
             parseBasicType(array, file);
+            break;
         case ARRAY_T:
             parseArrayType(array, file);
+            break;
         case POINTER_T:
             parsePointerType(array, file);
+            break;
         default:
             back_token(array);
     }
@@ -174,7 +181,6 @@ ARRAY_TYPE -> array[SIZE] of BASIC_TYPE
 */
 void parseArrayType(arrayList *array, FILE *file) {   
     fprintf(file, "{ARRAY_TYPE -> array[SIZE] of BASIC_TYPE}\n");
-    match(ARRAY_T, array, file);
     match(LEFT_BRACKET_T, array, file);
     parseSize(array, file);
     match(RIGHT_BRACKET_T, array, file);
@@ -187,7 +193,6 @@ POINTER_TYPE -> ^POINTER_TYPE`
 */
 void parsePointerType(arrayList *array, FILE *file){
     fprintf(file, "{POINTER_TYPE -> ^POINTER_TYPE`}\n");
-    match(POINTER_T, array, file);
     parsePointerType_(array, file);
 }
 
@@ -203,6 +208,7 @@ void parsePointerType_(arrayList *array, FILE *file) {
         case INTEGER_T:
         case REAL_T:
             parseBasicType(array, file);
+            break;
         case ID_T:
             break;
         default:
@@ -240,6 +246,7 @@ void parseCommands_(arrayList *array, FILE *file) {
         case SEMICOLON_T:
             parseCommand(array, file);
             parseCommands_(array, file);
+            break;
         default:
             back_token(array);
     }

@@ -1040,44 +1040,44 @@ YY_RULE_SETUP
 #line 121 "scanner.l"
 {create_and_store_token(RIGHT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-#line 123 "scanner.l"
-{create_and_store_token(EOF_T, &tokenList, yytext, line_num); endOfFile = 1; return 1;} 
-	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 125 "scanner.l"
+#line 123 "scanner.l"
 {line_num++;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 126 "scanner.l"
+#line 124 "scanner.l"
 
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 127 "scanner.l"
+#line 125 "scanner.l"
 
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 128 "scanner.l"
+#line 126 "scanner.l"
 
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 129 "scanner.l"
+#line 127 "scanner.l"
 
+	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+#line 128 "scanner.l"
+{create_and_store_token(EOF_T, &tokenList, yytext, line_num); endOfFile = 1; return 1;} 
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 130 "scanner.l"
+#line 129 "scanner.l"
 {printError(yytext, lexOutputFile);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 132 "scanner.l"
+#line 131 "scanner.l"
 ECHO;
 	YY_BREAK
 #line 1084 "lex.yy.c"
@@ -2079,7 +2079,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 132 "scanner.l"
+#line 131 "scanner.l"
 
 
 
@@ -2119,10 +2119,6 @@ int main(int argc, char *argv[]){
     }
 
     createNewArray(&tokenList);
-
-    while(!endOfFile){
-         printToken(next_token(&tokenList), lexOutputFile);
-    }
 
     parseProgram(&tokenList, syntacticOutputFile);
 

@@ -120,13 +120,12 @@ carriage_return         "\r"
 {left_bracket}          {create_and_store_token(LEFT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 {right_bracket}         {create_and_store_token(RIGHT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 
-<<EOF>>                 {create_and_store_token(EOF_T, &tokenList, yytext, line_num); endOfFile = 1; return 1;} 
-
 {new_line}              {line_num++;}
 {space}    
 {tab}	
 {carriage_return}
 "--".*                  	
+<<EOF>>                 {create_and_store_token(EOF_T, &tokenList, yytext, line_num); endOfFile = 1; return 1;} 
 .                       {printError(yytext, lexOutputFile);}
 
 %%
@@ -167,10 +166,6 @@ int main(int argc, char *argv[]){
     }
 
     createNewArray(&tokenList);
-
-    while(!endOfFile){
-         printToken(next_token(&tokenList), lexOutputFile);
-    }
 
     parseProgram(&tokenList, syntacticOutputFile);
 
