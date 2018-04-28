@@ -265,9 +265,6 @@ void parseCommand(arrayList *array, FILE *file) {
     token = next_token(array);
 
     switch(token->kind) {
-        // case RECEIVER:
-        //     fprintf(file, "{COMMAND -> RECEIVER = EXPRESSION}\n");
-        //     //todo
         case WHEN_T:
             fprintf(file, "{COMMAND -> when (EXPRESSION rel_op EXPRESSION) do}\n");
             match(LEFT_PARENTHESIS_T, array, file);
@@ -302,6 +299,11 @@ void parseCommand(arrayList *array, FILE *file) {
             match(END_FOR_T, array, file);
             break;
         case ID_T:
+            // the voodoo part
+            token = next_token(array); // now token is '='
+            token = next_token(array); // now token is either 'malloc' or 'epsilon' | '[' | '^'
+            if(token->kind)
+            fprintf(file, "{COMMAND -> RECEIVER = EXPRESSION}\n");
             fprintf(file, "{COMMAND -> id = malloc(size_of(type_name))}\n");
             match(ASSIGNMENT_T, array, file);
             match(MALLOC_T, array, file);
@@ -330,11 +332,11 @@ void parseCommand(arrayList *array, FILE *file) {
 /*
 RECEIVER -> id RECEIVER`
 */
-void parseReceiver(arrayList *array, FILE *file) {
-    fprintf(file, "{RECEIVER -> id RECEIVER`}\n");
-    match(ID_T, array, file);
-    parseReceiver_(array, file);
-}
+// void parseReceiver(arrayList *array, FILE *file) {
+//     fprintf(file, "{RECEIVER -> id RECEIVER`}\n");
+//     match(ID_T, array, file);
+//     parseReceiver_(array, file);
+// }
 
 /*
 RECEIVER` -> [EXPRESSION]
