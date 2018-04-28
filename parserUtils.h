@@ -32,6 +32,7 @@ void parseTypeIndicator(arrayList *, FILE*);
 void parseBasicType(arrayList *, FILE*);
 void parseArrayType(arrayList *, FILE*);
 void parsePointerType(arrayList *, FILE*);
+void parsePointerType_(arrayList *, FILE*);
 
 void parseSize(arrayList *, FILE*);
 

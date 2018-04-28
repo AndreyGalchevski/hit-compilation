@@ -120,7 +120,7 @@ carriage_return         "\r"
 {left_bracket}          {create_and_store_token(LEFT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 {right_bracket}         {create_and_store_token(RIGHT_BRACKET_T, &tokenList, yytext, line_num); return 1;} 
 
-<<EOF>>                 {endOfFile = 1; return 0;}
+<<EOF>>                 {create_and_store_token(EOF_T, &tokenList, yytext, line_num); endOfFile = 1; return 1;} 
 
 {new_line}              {line_num++;}
 {space}    
@@ -154,10 +154,12 @@ int main(int argc, char *argv[]){
     if (testFileNumber == 1) {
         yyin = fopen(testFile1, "r");
         lexOutputFile = fopen(lexOutput1, "w");
+        syntacticOutputFile = fopen(syntacticOutput1, "w");
     }
     else if (testFileNumber == 2) {
         yyin = fopen(testFile2, "r");
-        lexOutputFile = fopen(lexOutput2, "w");        
+        lexOutputFile = fopen(lexOutput2, "w");
+        syntacticOutputFile = fopen(syntacticOutput2, "w");               
     }
 
     if (yyin == NULL) {
@@ -165,10 +167,12 @@ int main(int argc, char *argv[]){
     }
 
     createNewArray(&tokenList);
-    
+
     while(!endOfFile){
          printToken(next_token(&tokenList), lexOutputFile);
     }
+
+    parseProgram(&tokenList, syntacticOutputFile);
 
     fclose(lexOutputFile);
     fclose(syntacticOutputFile);    

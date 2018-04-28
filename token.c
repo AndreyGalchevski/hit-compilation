@@ -47,7 +47,8 @@ char* toString(int i) {
 		"Left parenthesis",\
 		"Right parenthesis",\
 		"Left bracket",\
-		"Right bracket"
+		"Right bracket",\
+		"End Of File"
 		};
 	return tokenKinds[i];
 }

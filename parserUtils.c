@@ -1,33 +1,33 @@
 #include "parserUtils.h"
 
 void match(int tokenKind, arrayList *array, FILE *file) {
-    Token *token = nextToken(array, &fileIndex);
+    token *token = next_token(array);
     if (token->kind != tokenKind)
     {
         fprintf(file, "Expected token '%s' at line: %d, Actual token '%s', lexeme: '%s' \n",
-            toString(tokenKind), token->lineNumber, toString(token->kind), token->lexeme);
+            toString(tokenKind), token->line, toString(token->kind), token->lexeme);
     }
     else
     {
-        if (token->kind == EOF_)
+        if (token->kind == EOF_T)
         {
-            backToken(array, &fileIndex);
+            back_token(array);
         }
     }
 }
 
 void errorRecovery(int *followArray, arrayList *array) {
     int size = followArray[0];
-    Token *token = backToken(array, &fileIndex);
+    token *token = back_token(array);
     int i;
     while (1)
     {
-        token = nextToken(array, &fileIndex);
+        token = next_token(array);
         for (i = 1; i <= size; i++)
         {
-            if (token->kind == followArray[i] || token->kind == EOF_)
+            if (token->kind == followArray[i] || token->kind == EOF_T)
             {
-                backToken(array, &fileIndex);
+                back_token(array);
                 return;
             }
         }
@@ -66,15 +66,15 @@ void parseDefinitions(arrayList *array, FILE *file) {
 DEFINITIONS` -> ;DEFINITION DEFINITIONS` | epsilon
 */
 void parseDefinitions_(arrayList *array, FILE *file) {
-    Token *token;
+    token *token;
     fprintf(file, "{DEFINITIONS` -> ;DEFINITION DEFINITIONS` | epsilon}\n");
-    token = nextToken(array, &fileIndex);
+    token = next_token(array);
 
     switch(token->kind) {
         case SEMICOLON_T:
             parseDefinitions(array, file);
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -82,8 +82,8 @@ void parseDefinitions_(arrayList *array, FILE *file) {
 DEFINITIONS -> VAR_DEFINITION | TYPE_DEFINITION
 */
 void parseDefinition(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{DEFINITIONS -> VAR_DEFINITION | TYPE_DEFINITION}\n");
     switch(token->kind) {
         case ID_T:
@@ -107,8 +107,8 @@ void parseVarDefinition(arrayList *array, FILE *file) {
 VAR_DEFINITION` -> BASIC_TYPE | type_name
 */
 void parseVarDefinition_(arrayList *array, FILE *file) {   
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{VAR_DEFINITION` -> BASIC_TYPE | type_name}\n");
 
     switch(token->kind) {
@@ -135,8 +135,8 @@ void parseTypeDefinition_(arrayList *array, FILE *file) {
 TYPE_INDICATOR -> BASIC_TYPE | ARRAY_TYPE | POINTER_TYPE
 */
 void parseTypeIndicator(arrayList *array, FILE *file) {   
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{TYPE_INDICATOR -> BASIC_TYPE | ARRAY_TYPE | POINTER_TYPE}\n");
 
     switch(token->kind) {
@@ -148,7 +148,7 @@ void parseTypeIndicator(arrayList *array, FILE *file) {
         case POINTER_T:
             parsePointerType(array, file);
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -156,8 +156,8 @@ void parseTypeIndicator(arrayList *array, FILE *file) {
 BASIC_TYPE -> integer | real
 */
 void parseBasicType(arrayList *array, FILE *file) {   
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{BASIC_TYPE -> integer | real}\n");
 
     switch(token->kind) {
@@ -165,7 +165,7 @@ void parseBasicType(arrayList *array, FILE *file) {
         case REAL_T:
             break;
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -195,8 +195,8 @@ void parsePointerType(arrayList *array, FILE *file){
 POINTER_TYPE` -> BASIC_TYPE | type_name
 */
 void parsePointerType_(arrayList *array, FILE *file) {   
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{POINTER_TYPE` -> BASIC_TYPE | type_name}\n");
 
     switch(token->kind) {
@@ -206,7 +206,7 @@ void parsePointerType_(arrayList *array, FILE *file) {
         case ID_T:
             break;
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -232,8 +232,8 @@ void parseCommands(arrayList *array, FILE *file) {
 COMMANDS` -> ;COMMAND COMMANDS` | epsilon
 */
 void parseCommands_(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
     fprintf(file, "{COMMANDS` -> ;COMMAND COMMANDS` | epsilon}\n");
 
     switch(token->kind) {
@@ -241,7 +241,7 @@ void parseCommands_(arrayList *array, FILE *file) {
             parseCommand(array, file);
             parseCommands_(array, file);
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -254,13 +254,13 @@ COMMAND -> free(id)
 COMMAND -> BLOCK
 */
 void parseCommand(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
 
     switch(token->kind) {
-        case RECEIVER:
-            fprintf(file, "{COMMAND -> RECEIVER = EXPRESSION}\n");
-            //todo
+        // case RECEIVER:
+        //     fprintf(file, "{COMMAND -> RECEIVER = EXPRESSION}\n");
+        //     //todo
         case WHEN_T:
             fprintf(file, "{COMMAND -> when (EXPRESSION rel_op EXPRESSION) do}\n");
             match(LEFT_PARENTHESIS_T, array, file);
@@ -316,7 +316,7 @@ void parseCommand(arrayList *array, FILE *file) {
             parseBlock(array, file);
             break;
         default:
-            backToken(array, &fileIndex);
+            back_token(array);
     }
 }
 
@@ -335,8 +335,8 @@ RECEIVER` -> ^
 RECEIVER` -> epsilon
 */
 void parseReceiver_(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
 
     switch(token->kind) {
         case LEFT_BRACKET_T:
@@ -349,7 +349,7 @@ void parseReceiver_(arrayList *array, FILE *file) {
             break;
         default:
             fprintf(file, "{RECEIVER` -> epsilon}");
-            backToken(array, &fileIndex);     
+            back_token(array);     
     }
 }
 
@@ -361,8 +361,8 @@ EXPRESSION -> size_of(type_name)
 EXPRESSION -> id EXPRESSION`
 */
 void parseExpression(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
 
     switch(token->kind) {
         case INT_NUM_T:
@@ -385,7 +385,7 @@ void parseExpression(arrayList *array, FILE *file) {
             parseExpression_(array, file);
             break;
         default:
-            backToken(array, &fileIndex);     
+            back_token(array);     
     }
 }
 
@@ -396,8 +396,8 @@ EXPRESSION` -> ar_op EXPRESSION
 EXPRESSION -> epsilon
 */
 void parseExpression_(arrayList *array, FILE *file) {
-    Token *token;
-    token = nextToken(array, &fileIndex);
+    token *token;
+    token = next_token(array);
 
         switch(token->kind) {
             case LEFT_BRACKET_T:
@@ -414,6 +414,6 @@ void parseExpression_(arrayList *array, FILE *file) {
                 break;
             default:
                 fprintf(file, "{EXPRESSION -> epsilon}\n");        
-                backToken(array, &fileIndex);   
+                back_token(array);   
         }
 }
