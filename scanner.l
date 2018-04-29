@@ -38,19 +38,12 @@ free            "free"
 pointer              "^"
 address              "&"
 
-addition            "+"
-subtraction         "-"
-multiplication      "*"
-division            "/"
-power               "**"
+ar_op               "+"|"-"|"*"|"/"|"**"
+
 increment           "++"
 
-smaller_than         "<"
-greater_than         ">"
-smaller_equal_than   "<="
-greater_equal_than   ">="
-not_equal            "!="
-equal                "=="
+rel_op              "<"|">"|"<="|">="|"!="|"=="
+
 assignment           "="
 
 id			        {letter}({letter}|{digit}|(("_")({letter}|{digit})))*
@@ -90,19 +83,12 @@ carriage_return         "\r"
 {size_of}               {create_and_store_token(SIZE_OF_T, &tokenList, yytext, line_num); return 1;}
 {free}                  {create_and_store_token(FREE_T, &tokenList, yytext, line_num); return 1;}
 
-{addition}              {create_and_store_token(ADDITION_T, &tokenList, yytext, line_num); return 1;}
-{subtraction}           {create_and_store_token(SUBTRACTION_T, &tokenList, yytext, line_num); return 1;}
-{multiplication}        {create_and_store_token(MULTIPLICATION_T, &tokenList, yytext, line_num); return 1;}
-{division}              {create_and_store_token(DIVISION_T, &tokenList, yytext, line_num); return 1;}
-{power}                 {create_and_store_token(POWER_T, &tokenList, yytext, line_num); return 1;}
+{ar_op}                 {create_and_store_token(AR_OP_T, &tokenList, yytext, line_num); return 1;}
+
 {increment}             {create_and_store_token(INCREMENT_T, &tokenList, yytext, line_num); return 1;}
 
-{smaller_than}          {create_and_store_token(SMALLER_THAN_T, &tokenList, yytext, line_num); return 1;}
-{greater_than}          {create_and_store_token(GREATER_THAN_T, &tokenList, yytext, line_num); return 1;}
-{smaller_equal_than}    {create_and_store_token(SMALLER_EQUAL_THAN_T, &tokenList, yytext, line_num); return 1;}
-{greater_equal_than}    {create_and_store_token(GREATER_EQUAL_THAN_T, &tokenList, yytext, line_num); return 1;}
-{not_equal}             {create_and_store_token(NOT_EQUAL_T, &tokenList, yytext, line_num); return 1;}
-{equal}                 {create_and_store_token(EQUAL_T, &tokenList, yytext, line_num); return 1;}
+{rel_op}                 {create_and_store_token(REL_OP_T, &tokenList, yytext, line_num); return 1;}
+
 {assignment}            {create_and_store_token(ASSIGNMENT_T, &tokenList, yytext, line_num); return 1;}
 
 {pointer}               {create_and_store_token(POINTER_T, &tokenList, yytext, line_num); return 1;}

@@ -278,7 +278,7 @@ void parseCommands_(arrayList *array, FILE *file) {
 
 /*
 COMMAND -> RECEIVER = EXPRESSION
-COMMAND -> when (EXPRESSION rel_op EXPRESSION) do
+COMMAND -> when (EXPRESSION rel_op EXPRESSION) do COMMANDS; default COMMANDS; end_when
 COMMAND -> for (id = EXPRESSION; id rel_op EXPRESSION; id++) COMMANDS; end_for
 COMMAND -> id = malloc(size_of(type_name))
 COMMAND -> free(id)
@@ -290,7 +290,7 @@ void parseCommand(arrayList *array, FILE *file) {
 
     switch(token->kind) {
         case WHEN_T:
-            fprintf(file, "{COMMAND -> when (EXPRESSION rel_op EXPRESSION) do}\n");
+            fprintf(file, "{COMMAND -> when (EXPRESSION rel_op EXPRESSION) do COMMANDS; default COMMANDS; end_when}\n");
             match(LEFT_PARENTHESIS_T, array, file);
             parseExpression(array, file);
             match(REL_OP_T, array, file);
@@ -298,10 +298,8 @@ void parseCommand(arrayList *array, FILE *file) {
             match(RIGHT_PARENTHESIS_T, array, file);            
             match(DO_T, array, file);
             parseCommands(array, file);
-            match(SEMICOLON_T, array, file);
             match(DEFAULT_T, array, file);
             parseCommands(array, file);
-            match(SEMICOLON_T, array, file);            
             match(END_WHEN_T, array, file);
             break;
         case FOR_T:
@@ -319,7 +317,6 @@ void parseCommand(arrayList *array, FILE *file) {
             match(INCREMENT_T, array, file);
             match(RIGHT_PARENTHESIS_T, array, file);
             parseCommands(array, file);
-            match(SEMICOLON_T, array, file);            
             match(END_FOR_T, array, file);
             break;
         case ID_T:
@@ -356,7 +353,8 @@ void parseCommand(arrayList *array, FILE *file) {
             match(RIGHT_PARENTHESIS_T, array, file);
             break;
         case BLOCK_T:
-            fprintf(file, "{COMMAND -> BLOCK}\n");        
+            fprintf(file, "{COMMAND -> BLOCK}\n");
+            back_token(array);        
             parseBlock(array, file);
             break;
         default:
@@ -456,11 +454,7 @@ void parseExpression_(arrayList *array, FILE *file) {
             case POINTER_T:
                 fprintf(file, "{EXPRESSION` -> ^}\n");
                 break;                          
-            case ADDITION_T:
-            case SUBTRACTION_T:
-            case MULTIPLICATION_T:
-            case DIVISION_T:
-            case POWER_T:
+            case AR_OP_T:
                 fprintf(file, "{EXPRESSION` -> ar_op EXPRESSION}\n");
                 parseExpression(array, file);
                 break;
