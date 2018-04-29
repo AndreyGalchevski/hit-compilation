@@ -29,7 +29,7 @@ void parseVarDefinition_(arrayList *, FILE*);
 void parseTypeDefinition(arrayList *, FILE*);
 void parseTypeIndicator(arrayList *, FILE*);
 
-// void parseBasicType(arrayList *, FILE*);
+void parseBasicType(arrayList *, FILE*);
 void parseArrayType(arrayList *, FILE*);
 void parsePointerType(arrayList *, FILE*);
 void parsePointerType_(arrayList *, FILE*);
@@ -40,7 +40,6 @@ void parseCommands(arrayList *, FILE*);
 void parseCommands_(arrayList *, FILE*);
 void parseCommand(arrayList *, FILE*);
 
-// void parseReceiver(arrayList *, FILE*);
 void parseReceiver_(arrayList *, FILE*);
 
 void parseExpression(arrayList *, FILE*);

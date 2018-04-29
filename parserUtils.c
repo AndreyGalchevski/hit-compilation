@@ -67,15 +67,16 @@ DEFINITIONS` -> ;DEFINITION DEFINITIONS` | epsilon
 */
 void parseDefinitions_(arrayList *array, FILE *file) {
     token *token;
-    fprintf(file, "{DEFINITIONS` -> ;DEFINITION DEFINITIONS` | epsilon}\n");
     token = next_token(array);
 
     switch(token->kind) {
         case SEMICOLON_T:
+            fprintf(file, "{DEFINITIONS` -> ;DEFINITION DEFINITIONS`}\n");            
             parseDefinition(array, file);        
             parseDefinitions_(array, file);
             break;
         default:
+            fprintf(file, "{DEFINITIONS` -> epsilon}\n");                        
             back_token(array);
             break;
     }
@@ -87,12 +88,13 @@ DEFINITION -> VAR_DEFINITION | TYPE_DEFINITION
 void parseDefinition(arrayList *array, FILE *file) {
     token *token;
     token = next_token(array);
-    fprintf(file, "{DEFINITION -> VAR_DEFINITION | TYPE_DEFINITION}\n");
     switch(token->kind) {
         case ID_T:
+            fprintf(file, "{DEFINITION -> VAR_DEFINITION}\n");
             parseVarDefinition(array, file);
             break;
         case TYPE_T:
+            fprintf(file, "{DEFINITION -> TYPE_DEFINITION}\n");            
             parseTypeDefinition(array, file);
             break;
         default:
@@ -116,7 +118,6 @@ VAR_DEFINITION` -> BASIC_TYPE | type_name
 void parseVarDefinition_(arrayList *array, FILE *file) {   
     token *token;
     token = next_token(array);
-    fprintf(file, "{VAR_DEFINITION` -> BASIC_TYPE | type_name}\n");
 
     switch(token->kind) {
         case INTEGER_T:
@@ -152,19 +153,22 @@ TYPE_INDICATOR -> BASIC_TYPE | ARRAY_TYPE | POINTER_TYPE
 void parseTypeIndicator(arrayList *array, FILE *file) {   
     token *token;
     token = next_token(array);
-    fprintf(file, "{TYPE_INDICATOR -> BASIC_TYPE | ARRAY_TYPE | POINTER_TYPE}\n");
 
     switch(token->kind) {
         case INTEGER_T:
+            fprintf(file, "{TYPE_INDICATOR -> BASIC_TYPE}\n");              
             fprintf(file, "{BASIC_TYPE -> integer}\n");
             break;            
         case REAL_T:
+            fprintf(file, "{TYPE_INDICATOR -> BASIC_TYPE}\n");                          
             fprintf(file, "{BASIC_TYPE -> real}\n");
             break;
         case ARRAY_T:
+            fprintf(file, "{TYPE_INDICATOR -> ARRAY_TYPE}\n");                          
             parseArrayType(array, file);
             break;
         case POINTER_T:
+            fprintf(file, "{TYPE_INDICATOR -> POINTER_TYPE}\n");            
             parsePointerType(array, file);
             break;
         default:
@@ -363,20 +367,6 @@ void parseCommand(arrayList *array, FILE *file) {
     }
 }
 
-/*
-RECEIVER -> id RECEIVER`
-*/
-// void parseReceiver(arrayList *array, FILE *file) {
-//     fprintf(file, "{RECEIVER -> id RECEIVER`}\n");
-//     match(ID_T, array, file);
-//     parseReceiver_(array, file);
-// }
-
-/*
-RECEIVER` -> [EXPRESSION]
-RECEIVER` -> ^
-RECEIVER` -> epsilon
-*/
 void parseReceiver_(arrayList *array, FILE *file) {
     token *token;
     token = next_token(array);
