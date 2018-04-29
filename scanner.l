@@ -118,6 +118,9 @@ carriage_return         "\r"
 
 int main(int argc, char *argv[]){
     int testFileNumber = 1;
+    int analysisType = 1;
+
+    createNewArray(&tokenList);    
 
     const char* testFile1 = "/home/andrey/Documents/test1.txt";
     const char* testFile2 = "/home/andrey/Documents/test2.txt";
@@ -138,25 +141,50 @@ int main(int argc, char *argv[]){
 
     if (testFileNumber == 1) {
         yyin = fopen(testFile1, "r");
-        lexOutputFile = fopen(lexOutput1, "w");
-        syntacticOutputFile = fopen(syntacticOutput1, "w");
+        printf("Choose analysis type to run: 1 - for lexical or 2 - for syntactic\n");
+        scanf("%d", &analysisType);
+
+        if (analysisType == 1) {
+            lexOutputFile = fopen(lexOutput1, "w");
+            while(!endOfFile){
+                printToken(next_token(&tokenList), lexOutputFile);
+            }
+            fclose(lexOutputFile);
+        } else if (analysisType == 2) {
+            syntacticOutputFile = fopen(syntacticOutput1, "w");
+            parseProgram(&tokenList, syntacticOutputFile);
+            fclose(syntacticOutputFile);
+        }
+        else {
+            printf("Please enter valid number: 1 - for lexical or 2 - for syntactic\n");
+            return 0;
+        }
     }
     else if (testFileNumber == 2) {
         yyin = fopen(testFile2, "r");
-        lexOutputFile = fopen(lexOutput2, "w");
-        syntacticOutputFile = fopen(syntacticOutput2, "w");               
+        printf("Choose analysis type to run: 1 - for lexical or 2 - for syntactic\n");
+        scanf("%d", &analysisType);
+        
+        if (analysisType == 1) {
+            lexOutputFile = fopen(lexOutput2, "w");
+            while(!endOfFile){
+                printToken(next_token(&tokenList), lexOutputFile);
+            }
+            fclose(lexOutputFile);
+        } else if (analysisType == 2) {
+            syntacticOutputFile = fopen(syntacticOutput2, "w");
+            parseProgram(&tokenList, syntacticOutputFile);
+            fclose(syntacticOutputFile);
+        }
+        else {
+            printf("Please enter valid number: 1 - for lexical or 2 - for syntactic\n");
+            return 0;
+        }
     }
 
     if (yyin == NULL) {
         printf("There is no test file in the specified directory");
     }
-
-    createNewArray(&tokenList);
-
-    parseProgram(&tokenList, syntacticOutputFile);
-
-    fclose(lexOutputFile);
-    fclose(syntacticOutputFile);    
 
     return 1;
 }
