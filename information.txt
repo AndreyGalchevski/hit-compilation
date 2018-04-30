@@ -22,10 +22,10 @@ Notes:
 
 2. How to run the program:
     2.a
-        In the terminal, type "./scannerApp".
+        In the terminal, type "./compiler".
     2.b
-        Follow the instructions of the program 
+        Follow the instructions of the program
 
-3. How to (quickly) remove lex.yy.c and scannerApp files:
+3. How to (quickly) remove lex.yy.c and compiler files:
     1.a
         In the terminal, type "make clean"
