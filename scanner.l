@@ -122,14 +122,14 @@ int main(int argc, char *argv[]){
 
     createNewArray(&tokenList);    
 
-    const char* testFile1 = "/home/andrey/Documents/test1.txt";
-    const char* testFile2 = "/home/andrey/Documents/test2.txt";
+    const char* testFile1 = "/home/ubuntu/Documents/test1.txt";
+    const char* testFile2 = "/home/ubuntu/Documents/test2.txt";
 
-    const char* lexOutput1 = "/home/andrey/Documents/test1_328796511_300221280_lex.txt";
-    const char* lexOutput2 = "/home/andrey/Documents/test2_328796511_300221280_lex.txt";
+    const char* lexOutput1 = "/home/ubuntu/Documents/test1_328796511_300221280_lex.txt";
+    const char* lexOutput2 = "/home/ubuntu/Documents/test2_328796511_300221280_lex.txt";
 
-    const char* syntacticOutput1 = "/home/andrey/Documents/test1_328796511_300221280_syntactic.txt";
-    const char* syntacticOutput2 = "/home/andrey/Documents/test2_328796511_300221280_syntactic.txt";    
+    const char* syntacticOutput1 = "/home/ubuntu/Documents/test1_328796511_300221280_syntactic.txt";
+    const char* syntacticOutput2 = "/home/ubuntu/Documents/test2_328796511_300221280_syntactic.txt";    
 
     printf("Enter test file number to run: 1 or 2\n");
     scanf("%d", &testFileNumber);

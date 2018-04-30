@@ -5,16 +5,7 @@
 #include "arrayList.h"
 #include "token.h"
 
-int definitionsFollow[3] = {2, SEMICOLON_T, BEGIN_T};
-int definitionFollow[3] = {2, SEMICOLON_T, BEGIN_T};
-int commandsFollow[5] = {4, SEMICOLON_T, END_T, END_WHEN_T, END_FOR_T};
-int commandFollow[5] = {4, SEMICOLON_T, END_T, END_WHEN_T, END_FOR_T};
-int expressionFollow[5] = {4,  REL_OP_T, SEMICOLON_T, RIGHT_PARENTHESIS_T, RIGHT_BRACKET_T}; 
-int receiverFollow[3] = {1, LEFT_BRACKET_T, POINTER_T}; 
-int sizeFollow[3] = {2, RIGHT_BRACKET_T, OF_T};
-
 void match(int, arrayList *, FILE*);
-void errorRecovery(int *, arrayList *);
 
 void parseProgram(arrayList *, FILE*);
 

@@ -16,23 +16,6 @@ void match(int tokenKind, arrayList *array, FILE *file) {
     }
 }
 
-void errorRecovery(int *followArray, arrayList *array) {
-    int size = followArray[0];
-    token *token = back_token(array);
-    int i;
-    while (1)
-    {
-        token = next_token(array);
-        for (i = 1; i <= size; i++)
-        {
-            if (token->kind == followArray[i] || token->kind == EOF_T)
-            {
-                back_token(array);
-                return;
-            }
-        }
-    }
-}
 /*
 PROGRAM -> BLOCK
 */
