@@ -5,6 +5,15 @@
 #include "arrayList.h"
 #include "token.h"
 
+typedef enum eErrorType{
+	DUPLICATED_DECLARATION_ERROR,
+	VARIABLE_NOT_DECLARED_ERROR,
+	ASSIGNMENT_TO_CONSTANT_ERROR,
+	EXCEPTION_NAME_REFERENCED_ERROR,
+	TYPE_CONSISTENCY_ERROR,
+	NON_EXCEPTION_IN_RAISE_ERROR
+}eErrorType;
+
 void match(int, arrayList *, FILE*);
 
 void parseProgram(arrayList *, FILE*);
@@ -35,5 +44,7 @@ void parseReceiver_(arrayList *, FILE*);
 
 void parseExpression(arrayList *, FILE*);
 void parseExpression_(arrayList *, FILE*);
+
+void error(int errorType, int line, char* lexeme, FILE* file);
 
 #endif

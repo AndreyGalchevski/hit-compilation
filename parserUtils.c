@@ -1,4 +1,19 @@
 #include "parserUtils.h"
+#include "symbolTable.c"
+
+typedef struct Var {
+	int datatype;
+	char* lexeme;
+}Var;
+
+Var BASIC_TYPE;
+Var DEFINITION;
+Var DEFINITION_B;
+Var EXPRESSION;
+Var EXPRESSION_B;
+Var ID_LIST;
+
+TableEntry* id_entry;
 
 void match(int tokenKind, arrayList *array, FILE *file) {
     token *token = next_token(array);
@@ -30,10 +45,12 @@ BLOCK -> block DEFINITIONS; begin COMMANDS; end
 void parseBlock(arrayList *array, FILE *file) {
     fprintf(file, "{BLOCK -> block DEFINITIONS; begin COMMANDS; end}\n");
     match(BLOCK_T, array, file);
+		make_table();
     parseDefinitions(array, file);
     match(BEGIN_T, array, file);
     parseCommands(array, file);
-    match(END_T, array, file);    
+    match(END_T, array, file);
+		pop_table();
 }
 
 /*
@@ -74,6 +91,12 @@ void parseDefinition(arrayList *array, FILE *file) {
     switch(token->kind) {
         case ID_T:
             fprintf(file, "{DEFINITION -> VAR_DEFINITION}\n");
+						//insert the new id name and receive a pointer to its location
+						id_entry = insert(token->lexeme);
+						//in case the returned pointer is empty because this id was already declared
+						if(id_entry == NULL){ 
+							error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, file); 
+						}  
             parseVarDefinition(array, file);
             break;
         case TYPE_T:
@@ -98,7 +121,8 @@ void parseVarDefinition(arrayList *array, FILE *file) {
 /*
 VAR_DEFINITION` -> BASIC_TYPE | type_name
 */
-void parseVarDefinition_(arrayList *array, FILE *file) {   
+void parseVarDefinition_(arrayList *array, FILE *file) {
+		int data_type;
     token *token;
     token = next_token(array);
 
@@ -112,7 +136,13 @@ void parseVarDefinition_(arrayList *array, FILE *file) {
             fprintf(file, "{BASIC_TYPE -> real}\n");
             break;
         case ID_T:
-            fprintf(file, "{VAR_DEFINITION` -> type_name}\n");            
+            fprintf(file, "{VAR_DEFINITION` -> type_name}\n");
+						//insert the new id name and receive a pointer to its location
+						id_entry = insert(token->lexeme);
+						//in case the returned pointer is empty because this id was already declared
+						if(id_entry == NULL){ 
+							error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, file); 
+						}            
             break;
         default:
             back_token(array);
@@ -170,9 +200,11 @@ void parseBasicType(arrayList *array, FILE *file) {
     switch(token->kind) {
         case INTEGER_T:
             fprintf(file, "{BASIC_TYPE -> integer}\n");
+						BASIC_TYPE.datatype = INTEGER_T;
             break;
         case REAL_T:
-            fprintf(file, "{BASIC_TYPE -> real}\n");            
+            fprintf(file, "{BASIC_TYPE -> real}\n");
+						BASIC_TYPE.datatype = REAL_T;         
             break;
         default:
             back_token(array);
@@ -292,21 +324,43 @@ void parseCommand(arrayList *array, FILE *file) {
         case FOR_T:
             fprintf(file, "{COMMAND -> for (id = EXPRESSION; id rel_op EXPRESSION; id++) COMMANDS; end_for}\n");
             match(LEFT_PARENTHESIS_T, array, file);
-            match(ID_T, array, file);                                    
+            match(ID_T, array, file);
+						//insert the new id name and receive a pointer to its location
+						id_entry = insert(token->lexeme);
+						//in case the returned pointer is empty because this id was already declared
+						if(id_entry == NULL){ 
+							error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, file); 
+						}  
             match(ASSIGNMENT_T, array, file);
             parseExpression(array, file);
             match(SEMICOLON_T, array, file);
-            match(ID_T, array, file);                    
+            match(ID_T, array, file);
+						id_entry = find(token->lexeme);						                   
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}                          
             match(REL_OP_T, array, file);
             parseExpression(array, file);
             match(SEMICOLON_T, array, file);
-            match(ID_T, array, file);                    
+            match(ID_T, array, file);
+						id_entry = find(token->lexeme);						                   
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}                   
             match(INCREMENT_T, array, file);
             match(RIGHT_PARENTHESIS_T, array, file);
             parseCommands(array, file);
             match(END_FOR_T, array, file);
             break;
         case ID_T:
+						//insert the new id name and receive a pointer to its location
+						id_entry = insert(token->lexeme);
+						//in case the returned pointer is empty because this id was already declared
+						if(id_entry == NULL){ 
+							error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, file); 
+						}
             token = next_token(array); // now token is either '=' or epsilon | '[' | ^
             if (token->kind == ASSIGNMENT_T) {
                 token = next_token(array);
@@ -316,6 +370,11 @@ void parseCommand(arrayList *array, FILE *file) {
                     match(SIZE_OF_T, array, file);         
                     match(LEFT_PARENTHESIS_T, array, file);
                     match(ID_T, array, file);
+										id_entry = find(token->lexeme);						                   
+										//VARIABLE_NOT_DECLARED_ERROR
+										if (id_entry == NULL) { 
+											error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+										}  
                     match(RIGHT_PARENTHESIS_T, array, file);
                     match(RIGHT_PARENTHESIS_T, array, file);                                                               
                 }
@@ -337,6 +396,11 @@ void parseCommand(arrayList *array, FILE *file) {
             fprintf(file, "{COMMAND -> free(id)}\n");
             match(LEFT_PARENTHESIS_T, array, file);
             match(ID_T, array, file);
+						id_entry = find(token->lexeme);						                   
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}  
             match(RIGHT_PARENTHESIS_T, array, file);
             break;
         case BLOCK_T:
@@ -390,16 +454,37 @@ void parseExpression(arrayList *array, FILE *file) {
             break;
         case ADDRESS_T:
             fprintf(file, "{EXPRESSION -> &id}\n");
-            match(ID_T, array, file);        
+            match(ID_T, array, file);    
+						id_entry = find(token->lexeme);						                   
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}      
             break;
         case SIZE_OF_T:
             fprintf(file, "{EXPRESSION -> size_of(type_name)}\n");
             match(LEFT_PARENTHESIS_T, array, file);
             match(ID_T, array, file);
+						id_entry = find(token->lexeme);						                   
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}  
             match(RIGHT_PARENTHESIS_T, array, file);    
             break;        
         case ID_T:
-            fprintf(file, "{EXPRESSION -> id EXPRESSION`}\n");            
+						id_entry = find(token->lexeme);
+						//VARIABLE_NOT_DECLARED_ERROR
+						if (id_entry == NULL) { 
+							error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, file); 
+						}
+            fprintf(file, "{EXPRESSION -> id EXPRESSION`}\n");
+						//TYPE_CONSISTENCY_ERROR - case integer is on the left and real is on the right of the assignment
+						if(id_entry){
+							if ( is_integer(id_entry) && EXPRESSION.datatype == REAL_NUM_T ){ 
+								error(TYPE_CONSISTENCY_ERROR, token->line, token->lexeme, file);
+							}
+						}          
             parseExpression_(array, file);
             break;
         default:
@@ -436,4 +521,39 @@ void parseExpression_(arrayList *array, FILE *file) {
                 back_token(array); 
                 break;  
         }
+}
+
+
+void error(int errorType, int line, char* lexeme, FILE *file){
+	fprintf(file,"\n---Semantic Error: detected in line %d, lexeme '%s'---", line, lexeme);
+	switch(errorType){
+		case DUPLICATED_DECLARATION_ERROR:
+			fprintf(file,"\n---duplicated declaration of the same name within same scope is forbidden)---");
+			break;
+		case VARIABLE_NOT_DECLARED_ERROR:
+			fprintf(file,"\n---variable is used without being declared---");
+			break;
+		case ASSIGNMENT_TO_CONSTANT_ERROR:
+			fprintf(file,"\n---assignments to constants are forbidden---");
+			break;
+		case EXCEPTION_NAME_REFERENCED_ERROR:
+			fprintf(file,"\n---exception name can be referenced only in a command raise; all other references to exceptions are illegal---");
+			break;
+		case TYPE_CONSISTENCY_ERROR:
+			fprintf(file,"\n---left side integer and right side is real is forbidden---");
+			break;
+		case NON_EXCEPTION_IN_RAISE_ERROR:
+			fprintf(file,"\n---referencing a non-exception object in command raise is forbidden---");
+			break;
+		default:
+			break;
+	}
+}
+
+int isRealNumber(char* number){
+	char* c = strchr(number, '.');
+	if (c)
+		return 1;
+	else
+		return 0;
 }
