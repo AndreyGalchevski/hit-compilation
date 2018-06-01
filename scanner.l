@@ -6,6 +6,7 @@
 
 FILE* lexOutputFile;
 FILE* syntacticOutputFile;
+FILE* semanticOutputFile;
 
 int endOfFile = 0;
 arrayList tokenList;
@@ -129,7 +130,11 @@ int main(int argc, char *argv[]){
     const char* lexOutput2 = "/home/andrey/Documents/test2_328796511_300221280_lex.txt";
 
     const char* syntacticOutput1 = "/home/andrey/Documents/test1_328796511_300221280_syntactic.txt";
-    const char* syntacticOutput2 = "/home/andrey/Documents/test2_328796511_300221280_syntactic.txt";    
+    const char* syntacticOutput2 = "/home/andrey/Documents/test2_328796511_300221280_syntactic.txt"; 
+
+	
+    const char* semanticOutput1 = "/home/andrey/Documents/test1_328796511_300221280_semantic.txt";
+    const char* semanticOutput2 = "/home/andrey/Documents/test2_328796511_300221280_semantic.txt";   
 
     printf("Enter test file number to run: 1 or 2\n");
     scanf("%d", &testFileNumber);
@@ -141,7 +146,7 @@ int main(int argc, char *argv[]){
 
     if (testFileNumber == 1) {
         yyin = fopen(testFile1, "r");
-        printf("Choose analysis type to run: 1 - for lexical or 2 - for syntactic\n");
+        printf("Choose analysis type to run: 1 - lexical, 2 - syntactic + semantic\n");
         scanf("%d", &analysisType);
 
         if (analysisType == 1) {
@@ -152,17 +157,19 @@ int main(int argc, char *argv[]){
             fclose(lexOutputFile);
         } else if (analysisType == 2) {
             syntacticOutputFile = fopen(syntacticOutput1, "w");
-            parseProgram(&tokenList, syntacticOutputFile);
+            semanticOutputFile = fopen(semanticOutput1, "w");
+            parseProgram(&tokenList, syntacticOutputFile, semanticOutputFile);
             fclose(syntacticOutputFile);
+            fclose(semanticOutputFile);
         }
         else {
-            printf("Please enter valid number: 1 - for lexical or 2 - for syntactic\n");
+            printf("Please enter valid number: 1 - lexical, 2 - syntactic + semantic\n");
             return 0;
         }
     }
     else if (testFileNumber == 2) {
         yyin = fopen(testFile2, "r");
-        printf("Choose analysis type to run: 1 - for lexical or 2 - for syntactic\n");
+        printf("Choose analysis type to run: 1 - lexical, 2 - syntactic + semantic\n");
         scanf("%d", &analysisType);
         
         if (analysisType == 1) {
@@ -173,11 +180,13 @@ int main(int argc, char *argv[]){
             fclose(lexOutputFile);
         } else if (analysisType == 2) {
             syntacticOutputFile = fopen(syntacticOutput2, "w");
-            parseProgram(&tokenList, syntacticOutputFile);
+            semanticOutputFile = fopen(semanticOutput2, "w");
+            parseProgram(&tokenList, syntacticOutputFile, semanticOutputFile);
             fclose(syntacticOutputFile);
+            fclose(semanticOutputFile);
         }
         else {
-            printf("Please enter valid number: 1 - for lexical or 2 - for syntactic\n");
+            printf("Please enter valid number: 1 - lexical, 2 - syntactic + semantic\n");
             return 0;
         }
     }

@@ -16,34 +16,34 @@ typedef enum eErrorType{
 
 void match(int, arrayList *, FILE*);
 
-void parseProgram(arrayList *, FILE*);
+void parseProgram(arrayList *, FILE*, FILE*);
 
-void parseBlock(arrayList *, FILE*);
+void parseBlock(arrayList *, FILE*, FILE*);
 
-void parseDefinitions(arrayList *, FILE*);
-void parseDefinitions_(arrayList *, FILE*);
-void parseDefinition(arrayList *, FILE*);
+void parseDefinitions(arrayList *, FILE*, FILE*);
+void parseDefinitions_(arrayList *, FILE*, FILE*);
+void parseDefinition(arrayList *, FILE*, FILE*);
 
-void parseVarDefinition(arrayList *, FILE*);
-void parseVarDefinition_(arrayList *, FILE*);
-void parseTypeDefinition(arrayList *, FILE*);
-void parseTypeIndicator(arrayList *, FILE*);
+void parseVarDefinition(arrayList *, FILE*, FILE*);
+void parseVarDefinition_(arrayList *, FILE*, FILE*);
+void parseTypeDefinition(arrayList *, FILE*, FILE*);
+void parseTypeIndicator(arrayList *, FILE*, FILE*);
 
-void parseBasicType(arrayList *, FILE*);
-void parseArrayType(arrayList *, FILE*);
-void parsePointerType(arrayList *, FILE*);
-void parsePointerType_(arrayList *, FILE*);
+void parseBasicType(arrayList *, FILE*, FILE*);
+void parseArrayType(arrayList *, FILE*, FILE*);
+void parsePointerType(arrayList *, FILE*, FILE*);
+void parsePointerType_(arrayList *, FILE*, FILE*);
 
-void parseSize(arrayList *, FILE*);
+void parseSize(arrayList *, FILE*, FILE*);
 
-void parseCommands(arrayList *, FILE*);
-void parseCommands_(arrayList *, FILE*);
-void parseCommand(arrayList *, FILE*);
+void parseCommands(arrayList *, FILE*, FILE*);
+void parseCommands_(arrayList *, FILE*, FILE*);
+void parseCommand(arrayList *, FILE*, FILE*);
 
-void parseReceiver_(arrayList *, FILE*);
+void parseReceiver_(arrayList *, FILE*, FILE*);
 
-void parseExpression(arrayList *, FILE*);
-void parseExpression_(arrayList *, FILE*);
+void parseExpression(arrayList *, FILE*, FILE*);
+void parseExpression_(arrayList *, FILE*, FILE*);
 
 void error(int errorType, int line, char* lexeme, FILE* file);
 
