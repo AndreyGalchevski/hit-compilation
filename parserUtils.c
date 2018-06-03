@@ -13,7 +13,7 @@ Var EXPRESSION;
 
 TableEntry* id_entry;
 
-void match(int tokenKind, arrayList *array, FILE *file) {
+token* match(int tokenKind, arrayList *array, FILE *file) {
     token *token = next_token(array);
     if (token->kind != tokenKind) {
         fprintf(file, "Expected token '%s' at line: %d, Actual token '%s', lexeme: '%s' \n",
@@ -24,6 +24,7 @@ void match(int tokenKind, arrayList *array, FILE *file) {
             back_token(array);
         }
     }
+	return token;
 }
 
 /*
@@ -93,7 +94,7 @@ void parseDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
             parseVarDefinition(array, syntacticOut, semanticOut);
             break;
         case TYPE_T:
-            fprintf(syntacticOut, "{DEFINITION -> TYPE_DEFINITION}\n");            
+            fprintf(syntacticOut, "{DEFINITION -> TYPE_DEFINITION}\n");         
             parseTypeDefinition(array, syntacticOut, semanticOut);
             break;
         default:
@@ -145,6 +146,7 @@ void parseVarDefinition_(arrayList *array, FILE *syntacticOut, FILE *semanticOut
 type type_name is TYPE_INDICATOR
 */
 void parseTypeDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
+	token *token;
     fprintf(syntacticOut, "{TYPE_DEFINITION -> type type_name is TYPE_INDICATOR}\n");
     match(ID_T, array, syntacticOut);
     match(IS_T, array, syntacticOut);
@@ -318,15 +320,15 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
         case FOR_T:
             fprintf(syntacticOut, "{COMMAND -> for (id = EXPRESSION; id rel_op EXPRESSION; id++) COMMANDS; end_for}\n");
             match(LEFT_PARENTHESIS_T, array, syntacticOut);
-            match(ID_T, array, syntacticOut);
-			id_entry = insert(token->lexeme);
-			if(id_entry == NULL){ 
-				error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
+            token = match(ID_T, array, syntacticOut);
+			id_entry = find(token->lexeme);						                   
+			if (id_entry == NULL) { 
+				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
 			}  
             match(ASSIGNMENT_T, array, syntacticOut);
             parseExpression(array, syntacticOut, semanticOut);
             match(SEMICOLON_T, array, syntacticOut);
-            match(ID_T, array, syntacticOut);
+            token = match(ID_T, array, syntacticOut);
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
@@ -334,7 +336,7 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
             match(REL_OP_T, array, syntacticOut);
             parseExpression(array, syntacticOut, semanticOut);
             match(SEMICOLON_T, array, syntacticOut);
-            match(ID_T, array, syntacticOut);
+            token = match(ID_T, array, syntacticOut);
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
@@ -357,7 +359,7 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
                     match(LEFT_PARENTHESIS_T, array, syntacticOut);
                     match(SIZE_OF_T, array, syntacticOut);         
                     match(LEFT_PARENTHESIS_T, array, syntacticOut);
-                    match(ID_T, array, syntacticOut);
+                    token = match(ID_T, array, syntacticOut);
 					id_entry = find(token->lexeme);						                   
 					if (id_entry == NULL) { 
 						error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
@@ -370,6 +372,11 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
                     fprintf(syntacticOut, "{COMMAND -> RECEIVER = EXPRESSION}\n");
                     fprintf(syntacticOut, "{RECEIVER` -> epsilon}\n");                    
                     parseExpression(array, syntacticOut, semanticOut);
+					if(id_entry){
+						if ( is_integer(id_entry) && EXPRESSION.datatype == REAL_NUM_T ){ 
+							error(TYPE_CONSISTENCY_ERROR, token->line, token->lexeme, semanticOut);
+						}
+					}  
                 }
             }
             else {
@@ -382,7 +389,7 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
         case FREE_T:
             fprintf(syntacticOut, "{COMMAND -> free(id)}\n");
             match(LEFT_PARENTHESIS_T, array, syntacticOut);
-            match(ID_T, array, syntacticOut);
+            token = match(ID_T, array, syntacticOut);
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
@@ -440,16 +447,16 @@ void parseExpression(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
             break;
         case ADDRESS_T:
             fprintf(syntacticOut, "{EXPRESSION -> &id}\n");
-            match(ID_T, array, syntacticOut);    
+            token = match(ID_T, array, syntacticOut);    
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
-			}      
+			}
             break;
         case SIZE_OF_T:
             fprintf(syntacticOut, "{EXPRESSION -> size_of(type_name)}\n");
             match(LEFT_PARENTHESIS_T, array, syntacticOut);
-            match(ID_T, array, syntacticOut);
+            token = match(ID_T, array, syntacticOut);
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
@@ -461,12 +468,7 @@ void parseExpression(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			if (id_entry == NULL) { 
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
 			}
-            fprintf(syntacticOut, "{EXPRESSION -> id EXPRESSION`}\n");
-			if(id_entry){
-				if ( is_integer(id_entry) && EXPRESSION.datatype == REAL_NUM_T ){ 
-					error(TYPE_CONSISTENCY_ERROR, token->line, token->lexeme, semanticOut);
-				}
-			}          
+            fprintf(syntacticOut, "{EXPRESSION -> id EXPRESSION`}\n");        
             parseExpression_(array, syntacticOut, semanticOut);
             break;
         default:
@@ -510,13 +512,13 @@ void error(int errorType, int line, char* lexeme, FILE *file){
 	fprintf(file,"---Semantic Error: detected in line %d, lexeme '%s'---\n", line, lexeme);
 	switch(errorType){
 		case DUPLICATED_DECLARATION_ERROR:
-			fprintf(file,"---duplicated declaration of the same name within same scope is forbidden)---\n");
+			fprintf(file,"---duplicated declaration of the same name within same scope is forbidden)---\n\n");
 			break;
 		case VARIABLE_NOT_DECLARED_ERROR:
-			fprintf(file,"---variable is used without being declared---\n");
+			fprintf(file,"---variable is used without being declared---\n\n");
 			break;
 		case TYPE_CONSISTENCY_ERROR:
-			fprintf(file,"---left side integer and right side is real is forbidden---\n");
+			fprintf(file,"---left side integer and right side is real is forbidden---\n\n");
 			break;
 		default:
 			break;

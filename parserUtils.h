@@ -14,7 +14,7 @@ typedef enum eErrorType{
 	NON_EXCEPTION_IN_RAISE_ERROR
 }eErrorType;
 
-void match(int, arrayList *, FILE*);
+token* match(int, arrayList *, FILE*);
 
 void parseProgram(arrayList *, FILE*, FILE*);
 
