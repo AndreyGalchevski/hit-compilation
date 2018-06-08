@@ -50,6 +50,7 @@
 #define	LEFT_BRACKET_T	        43 
 #define	RIGHT_BRACKET_T	        44
 #define	EOF_T	                45
+#define ERROR_TYPE_T			46
 
 typedef struct {
     int kind;

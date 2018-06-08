@@ -6,10 +6,13 @@ typedef struct Var {
 	char* lexeme;
 }Var;
 
+Var VAR_DEFINITION;
+Var VAR_DEFINITION_;
 Var BASIC_TYPE;
 Var ARRAY_TYPE;
 Var POINTER_TYPE;
 Var EXPRESSION;
+Var EXPRESSION_;
 
 TableEntry* id_entry;
 
@@ -90,7 +93,10 @@ void parseDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			id_entry = insert(token->lexeme);
 			if(id_entry == NULL) { 
 				error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
-			}  
+			} 
+			else{
+				set_id_type(id_entry, VAR_DEFINITION_.datatype);
+			}
             parseVarDefinition(array, syntacticOut, semanticOut);
             break;
         case TYPE_T:
@@ -107,7 +113,7 @@ void parseDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 VAR_DEFINITION -> id: VAR_DEFINITION`
 */
 void parseVarDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
-    fprintf(syntacticOut, "{VAR_DEFINITION -> id: VAR_DEFINITION`}\n");
+	fprintf(syntacticOut, "{VAR_DEFINITION -> id: VAR_DEFINITION`}\n");
 	match(COLON_T, array, syntacticOut);
     parseVarDefinition_(array, syntacticOut, semanticOut);
 }
@@ -116,7 +122,6 @@ void parseVarDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut)
 VAR_DEFINITION` -> BASIC_TYPE | type_name
 */
 void parseVarDefinition_(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
-	int data_type;
     token *token;
     token = next_token(array);
 
@@ -124,10 +129,12 @@ void parseVarDefinition_(arrayList *array, FILE *syntacticOut, FILE *semanticOut
         case INTEGER_T:
             fprintf(syntacticOut, "{VAR_DEFINITION` -> BASIC_TYPE}\n");                        
             fprintf(syntacticOut, "{BASIC_TYPE -> integer}\n");
+			VAR_DEFINITION_.datatype = BASIC_TYPE.datatype;	
             break;
         case REAL_T:
             fprintf(syntacticOut, "{VAR_DEFINITION` -> BASIC_TYPE}\n");                        
             fprintf(syntacticOut, "{BASIC_TYPE -> real}\n");
+			VAR_DEFINITION_.datatype = BASIC_TYPE.datatype;			
             break;
         case ID_T:
             fprintf(syntacticOut, "{VAR_DEFINITION` -> type_name}\n");
@@ -327,6 +334,11 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			}  
             match(ASSIGNMENT_T, array, syntacticOut);
             parseExpression(array, syntacticOut, semanticOut);
+			if(id_entry){
+				if (is_integer(id_entry) && EXPRESSION.datatype == REAL_T){
+					error(TYPE_CONSISTENCY_ERROR, token->line, token->lexeme, semanticOut);
+				}
+			}
             match(SEMICOLON_T, array, syntacticOut);
             token = match(ID_T, array, syntacticOut);
 			id_entry = find(token->lexeme);						                   
@@ -373,7 +385,7 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
                     fprintf(syntacticOut, "{RECEIVER` -> epsilon}\n");                    
                     parseExpression(array, syntacticOut, semanticOut);
 					if(id_entry){
-						if ( is_integer(id_entry) && EXPRESSION.datatype == REAL_NUM_T ){ 
+						if ( is_integer(id_entry) && EXPRESSION.datatype == REAL_T ){ 
 							error(TYPE_CONSISTENCY_ERROR, token->line, token->lexeme, semanticOut);
 						}
 					}  
@@ -441,12 +453,15 @@ void parseExpression(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
     switch(token->kind) {
         case INT_NUM_T:
             fprintf(syntacticOut, "{EXPRESSION -> int_num}\n");
+			EXPRESSION.datatype = INTEGER_T;
             break;
         case REAL_NUM_T:
-            fprintf(syntacticOut, "{EXPRESSION -> real_num}\n");        
+            fprintf(syntacticOut, "{EXPRESSION -> real_num}\n");
+			EXPRESSION.datatype = REAL_T;			        
             break;
         case ADDRESS_T:
             fprintf(syntacticOut, "{EXPRESSION -> &id}\n");
+			EXPRESSION.datatype = INTEGER_T;
             token = match(ID_T, array, syntacticOut);    
 			id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
@@ -465,11 +480,19 @@ void parseExpression(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
             break;        
         case ID_T:
 			id_entry = find(token->lexeme);
-			if (id_entry == NULL) { 
+			if (id_entry == NULL) {
+				EXPRESSION.datatype = ERROR_TYPE_T;
 				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
 			}
             fprintf(syntacticOut, "{EXPRESSION -> id EXPRESSION`}\n");        
             parseExpression_(array, syntacticOut, semanticOut);
+			if (EXPRESSION_.datatype == ERROR_TYPE_T){
+				EXPRESSION.datatype = ERROR_TYPE_T;
+			}
+			else if (is_integer(id_entry) && EXPRESSION_.datatype == INTEGER_T){
+				EXPRESSION.datatype = INTEGER_T; }
+			else{
+				EXPRESSION.datatype = REAL_T;}
             break;
         default:
             back_token(array);
@@ -499,9 +522,11 @@ void parseExpression_(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 		case AR_OP_T:
 			fprintf(syntacticOut, "{EXPRESSION` -> ar_op EXPRESSION}\n");
 			parseExpression(array, syntacticOut, semanticOut);
+			EXPRESSION_.datatype = EXPRESSION.datatype;
 			break;
 		default:
-			fprintf(syntacticOut, "{EXPRESSION -> epsilon}\n");        
+			fprintf(syntacticOut, "{EXPRESSION -> epsilon}\n");
+			EXPRESSION_.datatype = INTEGER_T;  
 			back_token(array); 
 			break;  
 	}
@@ -509,16 +534,16 @@ void parseExpression_(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 
 
 void error(int errorType, int line, char* lexeme, FILE *file){
-	fprintf(file,"---Semantic Error: detected in line %d, lexeme '%s'---\n", line, lexeme);
+	fprintf(file,"(Line %d) ", line);
 	switch(errorType){
 		case DUPLICATED_DECLARATION_ERROR:
-			fprintf(file,"---duplicated declaration of the same name within same scope is forbidden)---\n\n");
+			fprintf(file,"Variable/Type '%s' is aleady defined\n", lexeme);			
 			break;
 		case VARIABLE_NOT_DECLARED_ERROR:
-			fprintf(file,"---variable is used without being declared---\n\n");
+			fprintf(file,"Variable/Type '%s' not defined\n", lexeme);
 			break;
 		case TYPE_CONSISTENCY_ERROR:
-			fprintf(file,"---left side integer and right side is real is forbidden---\n\n");
+			fprintf(file,"Inconsistency of types in assignment: left side is different from the right side\n");
 			break;
 		default:
 			break;
