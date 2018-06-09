@@ -368,9 +368,9 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			}
             token = next_token(array); // now token is either '=' or epsilon | '[' | ^
             if (token->kind == ASSIGNMENT_T) {
-                if (get_id_type(id_entry) == ARRAY_TYPE.datatype) {
-                    error(ASSIGNMENT_TO_ARRAY_ERROR, token->line, token->lexeme, semanticOut);
-                }
+                // if (get_id_type(id_entry) == ARRAY_TYPE.datatype) {
+                //     error(ASSIGNMENT_TO_ARRAY_ERROR, token->line, token->lexeme, semanticOut);
+                // }
                 token = next_token(array);
                 if (token->kind == MALLOC_T) {
                     fprintf(syntacticOut, "{COMMAND -> id = malloc(size_of(type_name))}\n");
@@ -433,6 +433,9 @@ void parseReceiver_(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
         case LEFT_BRACKET_T:
             fprintf(syntacticOut, "{RECEIVER` -> [EXPRESSION]}\n");
             parseExpression(array, syntacticOut, semanticOut);
+			if (get_id_type(id_entry) == EXPRESSION.datatype) { 
+				error(ARRAY_INDEX_ERROR, token->line, token->lexeme, semanticOut); 
+			}
             match(RIGHT_BRACKET_T, array, syntacticOut);
             break;
         case POINTER_T:
@@ -496,9 +499,11 @@ void parseExpression(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 				EXPRESSION.datatype = ERROR_TYPE_T;
 			}
 			else if (is_integer(id_entry) && EXPRESSION_.datatype == INTEGER_T){
-				EXPRESSION.datatype = INTEGER_T; }
+				EXPRESSION.datatype = INTEGER_T; 
+            }
 			else{
-				EXPRESSION.datatype = REAL_T;}
+				EXPRESSION.datatype = REAL_T;
+            }
             break;
         default:
             back_token(array);
@@ -554,6 +559,8 @@ void error(int errorType, int line, char* lexeme, FILE *file){
 		case TYPE_CONSISTENCY_ERROR:
 			fprintf(file,"mismatch between types of the left and the right sides of the assignment\n");
 			break;
+        case ARRAY_INDEX_ERROR:
+            fprintf(file, "index of array must be integer\n");
 		default:
 			break;
 	}
