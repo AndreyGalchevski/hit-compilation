@@ -138,10 +138,10 @@ void parseVarDefinition_(arrayList *array, FILE *syntacticOut, FILE *semanticOut
             break;
         case ID_T:
             fprintf(syntacticOut, "{VAR_DEFINITION` -> type_name}\n");
-			id_entry = insert(token->lexeme);
-			if(id_entry == NULL) { 
-				error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
-			}            
+            id_entry = find(token->lexeme);						                   
+			if (id_entry == NULL) { 
+				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
+			}          
             break;
         default:
             back_token(array);
@@ -155,7 +155,11 @@ type type_name is TYPE_INDICATOR
 void parseTypeDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 	token *token;
     fprintf(syntacticOut, "{TYPE_DEFINITION -> type type_name is TYPE_INDICATOR}\n");
-    match(ID_T, array, syntacticOut);
+    token = match(ID_T, array, syntacticOut);
+    id_entry = insert(token->lexeme);
+    if(id_entry == NULL) { 
+        error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
+    } 
     match(IS_T, array, syntacticOut);
     parseTypeIndicator(array, syntacticOut, semanticOut);
 }
@@ -230,7 +234,6 @@ POINTER_TYPE -> ^POINTER_TYPE`
 */
 void parsePointerType(arrayList *array, FILE *syntacticOut, FILE *semanticOut){
     fprintf(syntacticOut, "{POINTER_TYPE -> ^POINTER_TYPE`}\n");
-
 	POINTER_TYPE.datatype = POINTER_T;
     parsePointerType_(array, syntacticOut, semanticOut);
 }
@@ -246,10 +249,12 @@ void parsePointerType_(arrayList *array, FILE *syntacticOut, FILE *semanticOut) 
         case INTEGER_T:
             fprintf(syntacticOut, "{POINTER_TYPE` -> BASIC_TYPE}\n");            
             fprintf(syntacticOut, "{BASIC_TYPE -> integer}\n");
+            BASIC_TYPE.datatype = INTEGER_T;
             break;            
         case REAL_T:
             fprintf(syntacticOut, "{POINTER_TYPE` -> BASIC_TYPE}\n");                    
             fprintf(syntacticOut, "{BASIC_TYPE -> real}\n");
+            BASIC_TYPE.datatype = REAL_T;
             break;
         case ID_T:
             fprintf(syntacticOut, "{POINTER_TYPE` -> type_name}\n");
@@ -265,7 +270,6 @@ SIZE -> int_num
 */
 void parseSize(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {   
     fprintf(syntacticOut, "{SIZE -> int_num}\n");
-
     match(INT_NUM_T, array, syntacticOut);
 }
 
@@ -274,7 +278,6 @@ COMMANDS -> COMMAND COMMANDS`
 */
 void parseCommands(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {   
     fprintf(syntacticOut, "{COMMANDS -> COMMAND COMMANDS`}\n");
-    
     parseCommand(array, syntacticOut, semanticOut);
     parseCommands_(array, syntacticOut, semanticOut);
 }
@@ -365,6 +368,9 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			}
             token = next_token(array); // now token is either '=' or epsilon | '[' | ^
             if (token->kind == ASSIGNMENT_T) {
+                if (get_id_type(id_entry) == ARRAY_TYPE.datatype) {
+                    error(ASSIGNMENT_TO_ARRAY_ERROR, token->line, token->lexeme, semanticOut);
+                }
                 token = next_token(array);
                 if (token->kind == MALLOC_T) {
                     fprintf(syntacticOut, "{COMMAND -> id = malloc(size_of(type_name))}\n");
@@ -375,7 +381,7 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 					id_entry = find(token->lexeme);						                   
 					if (id_entry == NULL) { 
 						error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
-					}  
+					}
                     match(RIGHT_PARENTHESIS_T, array, syntacticOut);
                     match(RIGHT_PARENTHESIS_T, array, syntacticOut);                                                               
                 }
@@ -537,13 +543,16 @@ void error(int errorType, int line, char* lexeme, FILE *file){
 	fprintf(file,"(Line %d) ", line);
 	switch(errorType){
 		case DUPLICATED_DECLARATION_ERROR:
-			fprintf(file,"Variable/Type '%s' is aleady defined\n", lexeme);			
+			fprintf(file,"duplicated declaration of '%s'\n", lexeme);			
 			break;
 		case VARIABLE_NOT_DECLARED_ERROR:
-			fprintf(file,"Variable/Type '%s' not defined\n", lexeme);
+			fprintf(file,"'%s' is not declared\n", lexeme);
 			break;
+        case ASSIGNMENT_TO_ARRAY_ERROR:
+			fprintf(file,"assignment to array is forbidden\n");
+            break;
 		case TYPE_CONSISTENCY_ERROR:
-			fprintf(file,"Inconsistency of types in assignment: left side is different from the right side\n");
+			fprintf(file,"mismatch between types of the left and the right sides of the assignment\n");
 			break;
 		default:
 			break;

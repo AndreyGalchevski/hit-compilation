@@ -12,7 +12,6 @@ typedef struct TableEntry {
 	char *name;
 	int datatype;
 	int line;
-	int constant;
 	struct TableEntry* next;
 }TableEntry;
 

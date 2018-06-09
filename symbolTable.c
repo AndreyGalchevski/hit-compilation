@@ -68,7 +68,6 @@ TableEntry* insert (char* id_name){
 		newEntry->name = (char*)malloc((strlen(id_name) + 1) * sizeof(char));
 		strcpy(newEntry->name,id_name);
 		newEntry->line = 0;
-		newEntry->constant = 0;
 
 		if (hashTableEntry == NULL){
 			newEntry->next = NULL;
