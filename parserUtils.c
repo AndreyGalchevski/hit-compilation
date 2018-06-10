@@ -8,6 +8,7 @@ typedef struct Var {
 
 Var VAR_DEFINITION;
 Var VAR_DEFINITION_;
+Var TYPE_INDICATOR;
 Var BASIC_TYPE;
 Var ARRAY_TYPE;
 Var POINTER_TYPE;
@@ -140,7 +141,7 @@ void parseVarDefinition_(arrayList *array, FILE *syntacticOut, FILE *semanticOut
             fprintf(syntacticOut, "{VAR_DEFINITION` -> type_name}\n");
             id_entry = find(token->lexeme);						                   
 			if (id_entry == NULL) { 
-				error(VARIABLE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
+				error(TYPE_NOT_DECLARED_ERROR, token->line, token->lexeme, semanticOut); 
 			}          
             break;
         default:
@@ -158,8 +159,11 @@ void parseTypeDefinition(arrayList *array, FILE *syntacticOut, FILE *semanticOut
     token = match(ID_T, array, syntacticOut);
     id_entry = insert(token->lexeme);
     if(id_entry == NULL) { 
-        error(DUPLICATED_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
-    } 
+        error(DUPLICATED_TYPE_DECLARATION_ERROR, token->line, token->lexeme, semanticOut); 
+    }
+    else {
+        set_id_type(id_entry, TYPE_INDICATOR.datatype);
+    }
     match(IS_T, array, syntacticOut);
     parseTypeIndicator(array, syntacticOut, semanticOut);
 }
@@ -175,18 +179,22 @@ void parseTypeIndicator(arrayList *array, FILE *syntacticOut, FILE *semanticOut)
         case INTEGER_T:
             fprintf(syntacticOut, "{TYPE_INDICATOR -> BASIC_TYPE}\n");              
             fprintf(syntacticOut, "{BASIC_TYPE -> integer}\n");
+            TYPE_INDICATOR.datatype = INTEGER_T;
             break;            
         case REAL_T:
             fprintf(syntacticOut, "{TYPE_INDICATOR -> BASIC_TYPE}\n");                          
             fprintf(syntacticOut, "{BASIC_TYPE -> real}\n");
+            TYPE_INDICATOR.datatype = REAL_T;
             break;
         case ARRAY_T:
             fprintf(syntacticOut, "{TYPE_INDICATOR -> ARRAY_TYPE}\n");                          
             parseArrayType(array, syntacticOut, semanticOut);
+            TYPE_INDICATOR.datatype = ARRAY_TYPE.datatype;
             break;
         case POINTER_T:
             fprintf(syntacticOut, "{TYPE_INDICATOR -> POINTER_TYPE}\n");            
             parsePointerType(array, syntacticOut, semanticOut);
+            TYPE_INDICATOR.datatype = POINTER_TYPE.datatype;
             break;
         default:
             back_token(array);
@@ -548,10 +556,16 @@ void error(int errorType, int line, char* lexeme, FILE *file){
 	fprintf(file,"(Line %d) ", line);
 	switch(errorType){
 		case DUPLICATED_DECLARATION_ERROR:
-			fprintf(file,"duplicated declaration of '%s'\n", lexeme);			
+			fprintf(file,"duplicated declaration of variable '%s'\n", lexeme);			
+			break;
+        case DUPLICATED_TYPE_DECLARATION_ERROR:
+			fprintf(file,"duplicated declaration of type '%s'\n", lexeme);			
 			break;
 		case VARIABLE_NOT_DECLARED_ERROR:
-			fprintf(file,"'%s' is not declared\n", lexeme);
+			fprintf(file,"variable '%s' is not declared\n", lexeme);
+			break;
+        case TYPE_NOT_DECLARED_ERROR:
+			fprintf(file,"type '%s' is not declared\n", lexeme);
 			break;
         case ASSIGNMENT_TO_ARRAY_ERROR:
 			fprintf(file,"assignment to array is forbidden\n");
