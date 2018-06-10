@@ -376,9 +376,6 @@ void parseCommand(arrayList *array, FILE *syntacticOut, FILE *semanticOut) {
 			}
             token = next_token(array); // now token is either '=' or epsilon | '[' | ^
             if (token->kind == ASSIGNMENT_T) {
-                // if (get_id_type(id_entry) == ARRAY_TYPE.datatype) {
-                //     error(ASSIGNMENT_TO_ARRAY_ERROR, token->line, token->lexeme, semanticOut);
-                // }
                 token = next_token(array);
                 if (token->kind == MALLOC_T) {
                     fprintf(syntacticOut, "{COMMAND -> id = malloc(size_of(type_name))}\n");
